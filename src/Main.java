@@ -1,4 +1,5 @@
 import java.net.URI;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -7,6 +8,8 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) throws Exception {
+
+        var geradora = new GeradorDeFigurinhas();
 
         //fazer uma conexão HTTP e buscar os top 250 filmes
         String url = "https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies.json";
@@ -22,9 +25,13 @@ public class Main {
 
         //exibir e manipular os dados
         for (Map<String, String> filme : listaDeFilmes) {
+            double nota = Double.parseDouble(filme.get("imDbRating"));
+
+            geradora.cria(new URL(filme.get("image")).openStream(), nota, "saida/" + filme.get("title") + ".png");
+
             System.out.println(filme.get("title"));
-            System.out.println(filme.get("image"));
-            System.out.println(filme.get("imDbRating"));
+//            System.out.println(filme.get("image"));
+//            System.out.println(filme.get("imDbRating"));
             System.out.println();
         }
     }
