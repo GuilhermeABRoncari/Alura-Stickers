@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.InputStream;
 
 public class GeradorDeFigurinhas {
-    public void cria(InputStream inputStream, double nota, String nomeArquivo) throws Exception {
+    public void cria(InputStream inputStream, String nomeArquivo) throws Exception {
         //leitura da imagem
         BufferedImage imagemOriginal = ImageIO.read(inputStream);
 
@@ -25,9 +25,7 @@ public class GeradorDeFigurinhas {
         graphics.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 86));
 
         //escrever uma frase na imagem
-        if (nota > 8.9) graphics.drawString("Filme exelente!", novaLargura / 2 - novaLargura / 2, novaAltura - 80);
-        if (nota > 8.1 && nota < 9) graphics.drawString("Filme bom!", novaLargura / 2 - novaLargura / 2, novaAltura - 80);
-        if (nota < 8) graphics.drawString("Filme mediano!", novaLargura / 2 - novaLargura / 2, novaAltura - 80);
+        graphics.drawString("Topzera", novaLargura / 2 - novaLargura / 2, novaAltura - 80);
 
 
         //escrever a nova imagem em um arquivo

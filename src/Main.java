@@ -1,38 +1,30 @@
-import java.net.URI;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.List;
-import java.util.Map;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
         var geradora = new GeradorDeFigurinhas();
 
         //fazer uma conexão HTTP e buscar os top 250 filmes
-        String url = "https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies.json";
-        URI uri = URI.create(url);
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder(uri).GET().build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        String body = response.body();
+        String urlIMDB = "https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies.json";
+        String urlNASA = "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&start_date=2022-06-12&end_date=2022-06-14";
+        ClienteHttp clienteHttp = new ClienteHttp();
+        String json = clienteHttp.buscaDados(urlNASA);
 
-        //pegar só os dados importantes (titulo, poster, classificação)
-        JsonParser parser = new JsonParser();
-        List<Map<String, String>> listaDeFilmes = parser.parse(body);
 
         //exibir e manipular os dados
-        for (Map<String, String> filme : listaDeFilmes) {
-            double nota = Double.parseDouble(filme.get("imDbRating"));
+        var extratorNasa = new ExtratorDeConteudoDaNasa();
+        var extratorIMDB = new ExtratorDeConteudoDoIMDB();
+        List<Conteudo> conteudos = extratorNasa.extraiConteudos(json);
 
-            geradora.cria(new URL(filme.get("image")).openStream(), nota, "saida/" + filme.get("title") + ".png");
-
-            System.out.println(filme.get("title"));
-//            System.out.println(filme.get("image"));
-//            System.out.println(filme.get("imDbRating"));
-            System.out.println();
-        }
+        conteudos.forEach(conteudo -> {
+            try {
+                geradora.cria(new URL(conteudo.urlImagem()).openStream(), "saida/" + conteudo.titulo() + ".png");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(conteudo.titulo());
+        });
     }
 }
